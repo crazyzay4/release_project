@@ -6,6 +6,7 @@ HEIGH = 700
 SIZE = (WIDTH, HEIGH)  
 FPS = 60
 
+lives = 3
 window = pygame.display.set_mode(SIZE)
 clock = pygame.time.Clock()
 background = pygame.transform.scale(pygame.image.load("la.png"),SIZE)
@@ -23,36 +24,50 @@ class Player(GameSprite):
     def update(self):
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_w]:
+        if keys[pygame.K_a]:
+            self.rect.x -= 7
 
-            self.rect.y -= 5
+        if keys[pygame.K_d]:
+            self.rect.x += 7
+
 
 
 class Enemy_car(GameSprite):
     def update(self):
-        ...
-
+        self.rect.y += 4
+       
 class Enemy_human(GameSprite):
     def update(self):
         ...
+
 
 class Enemy_stone(GameSprite):
     def update(self):
         ...
 
-game_object = GameSprite("mustang.png", (60,120), (550,635))
-enemy = ("enemy_car.png", (75,130), (450,400))
+player = Player("mustang.png", (50,100), (550,635))
+enemy = Enemy_car("enemy_car.png", (50,100), (450,400))
 
+finish = False
 
 game_over = False
 while not game_over:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_over = True
+if not finish:     
     window.blit(background,(0,0))
-    game_object.reset()
+    player.reset()
+    player.update()
+    enemy.reset()
+    enemy.update()
 
- 
+
+
+    if player.rect.colliderect(enemy.rect):
+        lives -= 1
+    if lives == 0:
+        game_over = True
 
     pygame.display.update()
     clock.tick(FPS)
